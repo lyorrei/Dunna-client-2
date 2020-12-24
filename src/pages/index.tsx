@@ -1,21 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import requireAuthentication from '../HOC/requireAuthentication'
 
 import Head from 'next/head'
+import Page from '../components/page'
 
-const Home: React.FC = () => {
+const Home = () => {
     return (
         <div>
             <Head>
                 <title>Dunna Jewelry</title>
             </Head>
-
-            <main>
-                <h1>Hello World</h1>
-                <h2>teste</h2>
-            </main>
+            <Page>
+                <main>
+                    <h1>Hello World</h1>
+                    <h2>teste</h2>
+                </main>
+            </Page>
         </div>
     )
 }
 
-export default Home
+Home.getInitialProps = ctx => {
+    // console.log(ctx.req)
+    return {
+
+    }
+}
+
+export default requireAuthentication(Home)

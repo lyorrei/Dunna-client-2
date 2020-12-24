@@ -1,10 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
-interface Props {
-    active: boolean
-}
-
-export default createGlobalStyle<Props>`
+export default createGlobalStyle`
 	* {
 		margin: 0;
 		padding: 0;
@@ -17,8 +13,9 @@ export default createGlobalStyle<Props>`
 	}
 
     body {
-        background-color: #ccc;
-        font-family: sans-serif;
-        color: #777;
+        background-color: ${props => props.theme.colors.greyDark3};
+        /* background-color: #dbdbdb; */
+        font-family: 'Raleway', sans-serif;
+        color: ${props => props.theme.colors.greyDark2};
     }
 `
