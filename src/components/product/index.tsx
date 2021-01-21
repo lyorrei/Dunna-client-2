@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 
 import { Container, Content, ImageContainer, Price, Title } from './style'
 
-import Button from '../button'
+import Button, { InlineButton } from '../button'
+
+import { item } from '../../pages/shop'
+
+import { useCart, checkIfProductIsInCart } from '../../context/Cart'
+
+import Image from 'next/image'
 
 export interface ImageProduct {
+    _id: string
     product: string
     name: string
     size: number
@@ -28,21 +35,42 @@ export interface ProductInterface {
 }
 
 const product: React.FC<ProductInterface> = props => {
+    const [isActive, setIsActive] = useState(true)
+    const { cart, addProduct } = useCart()
+
+    useEffect(() => {
+        if (checkIfProductIsInCart(cart, props)) {
+            setIsActive(false)
+        } else {
+            setIsActive(true)
+        }
+    }, [cart])
+
     return (
-        <Container>
-            <Link href={'/shop/' + props._id}>
-                <a>
-                    <ImageContainer
-                        imageUrl={props.images[0]?.url}
-                    ></ImageContainer>
-                </a>
-            </Link>
+        <Container variants={item}>
+            <ImageContainer>
+                <Link href={'/shop/' + props._id}>
+                    <a>
+                        <Image
+                            src={props.images[0]?.url}
+                            layout="fill"
+                            objectFit="cover"
+                            quality={100}
+                        />
+                    </a>
+                </Link>
+            </ImageContainer>
             <Content>
                 <Link href={'/shop/' + props._id}>
                     <Title>{props.name}</Title>
                 </Link>
                 <Price>R$ {(props.price / 100).toFixed(2)}</Price>
-                <Button>Adicionar ao carrinho</Button>
+                <Button
+                    onClick={() => addProduct({ ...props })}
+                    disabled={!isActive}
+                >
+                    {isActive ? 'Adicionar ao carrinho' : 'Produto adicionado'}
+                </Button>
             </Content>
         </Container>
     )

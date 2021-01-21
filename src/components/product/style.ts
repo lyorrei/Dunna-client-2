@@ -1,47 +1,42 @@
 import styled from 'styled-components'
+import { motion } from 'framer-motion'
 
-export const Container = styled.div`
+export const Container = styled(motion.div)`
     background-color: ${props => props.theme.colors.white};
-    border-radius: 3px;
-    box-shadow: 1rem 1rem 1.5rem rgba(0, 0, 0, 0.2);
-    text-align: center;
+    border: 1px solid ${props => props.theme.colors.greyLight4};
     overflow: hidden;
+    transition: all 0.2s;
+    padding: 4rem;
+`
+
+export const ImageContainer = styled.div`
+    height: 30rem;
+
+    border-radius: ${props => props.theme.sizes.borderRadius};
     transition: all .2s;
+    position: relative;
 
     &:hover {
         transform: scale(1.05)
     }
-`
-
-interface ImageContainerProps {
-    imageUrl: string
-}
-
-export const ImageContainer = styled.div<ImageContainerProps>`
-    height: 30rem;
-    background-image: url(${props => props.imageUrl});
-    background-size: cover;
-    background-position: center;
 `
 
 export const Content = styled.div`
     color: ${props => props.theme.colors.greyDark1};
-    padding: 2rem;
+    margin-top: 2rem;
 `
 
 export const Title = styled.h2`
     font-size: 2.5rem;
-    font-weight: 500;
     cursor: pointer;
-    transition: all .2s;
+    transition: all 0.2s;
+    font-weight: 400;
+    transform-origin: 0;
 
-    &:hover {
-        transform: scale(1.05)
-    }
 `
 
 export const Price = styled.p`
-    font-size: 1.6rem;
+    font-size: 1.8rem;
     font-weight: 300;
     margin-top: 1.5rem;
     font-family: sans-serif;

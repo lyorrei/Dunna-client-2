@@ -1,10 +1,11 @@
+import { motion } from 'framer-motion'
 import styled, { css } from 'styled-components'
 
 interface ContainerProps {
     background: string
 }
 
-export const Container = styled.div<ContainerProps>`
+export const Container = styled(motion.div)<ContainerProps>`
     position: relative;
     height: calc(100vh - 6rem);
 
@@ -21,7 +22,7 @@ export const Container = styled.div<ContainerProps>`
     }
 `
 
-export const Content = styled.div`
+export const Content = styled(motion.div)`
     width: 30vw;
     position: absolute;
     top: 50%;
@@ -32,6 +33,7 @@ export const Content = styled.div`
 
     background-color: ${props => props.theme.colors.white};
 
+    border-radius: ${props => props.theme.sizes.borderRadius};
     padding: 8rem 4rem;
     padding-bottom: 6rem;
     overflow: hidden;
@@ -88,6 +90,7 @@ export const ButtonSignup = styled(Button)`
 
 interface AuthContainerProps {
     login: boolean
+    loading: number
 }
 
 const activeContainer = css`
@@ -101,4 +104,5 @@ export const AuthContainer = styled.div<AuthContainerProps>`
     transition: all 0.8s;
 
     ${props => !props.login && activeContainer}
+    ${props => props.loading && `display: none`}
 `

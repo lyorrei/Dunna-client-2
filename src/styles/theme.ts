@@ -12,7 +12,15 @@ const theme = {
         greyLight4: '#ccc',
         greyDark1: '#333',
         greyDark2: '#777',
-        greyDark3: '#999'
+        greyDark3: '#999',
+
+        background: '#cad0db',
+        backgroundLight: '#e4e7ed',
+        backgroundDark: '#a2a9b8'
+    },
+
+    sizes: {
+        borderRadius: '3px'
     }
 }
 

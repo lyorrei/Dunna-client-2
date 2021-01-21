@@ -12,15 +12,17 @@ import Form from '../form'
 import Router from 'next/router'
 import Alert from '../alert/style'
 import { Types } from '../alert'
+import { useUser } from '../../context/User'
 
 interface Props {
-    loading: boolean
     setLoading(boolean: boolean): void
 }
 
-const signupForm: React.FC<Props> = ({ loading, setLoading }) => {
+const signupForm: React.FC<Props> = ({ setLoading }) => {
     const [formError, setFormError] = useState(null)
     const formRef = useRef<FormHandles>(null)
+
+    const { setUser } = useUser()
 
     const handleSubmit: SubmitHandler<FormData> = async data => {
         try {
@@ -46,7 +48,8 @@ const signupForm: React.FC<Props> = ({ loading, setLoading }) => {
 
             // Validation passed
             setLoading(true)
-            await axios.post('/users/create', data)
+            const { data: user } = await axios.post('/users/create', data)
+            setUser(user)
             Router.replace('/')
         } catch (err) {
             const validationErrors = {}
@@ -61,10 +64,6 @@ const signupForm: React.FC<Props> = ({ loading, setLoading }) => {
             }
             console.log(err)
         }
-    }
-
-    if (loading) {
-        return null
     }
 
     return (

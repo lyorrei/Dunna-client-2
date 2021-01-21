@@ -1,49 +1,89 @@
-import React from 'react'
-import { Nav, LogoBox, NavBox } from './style'
+import React, { useEffect, useRef, useState } from 'react'
+import axios from '../../../axios'
+
+import { Nav, LogoBox, NavBox, Li, AuthLi, AuthDiv } from './style'
 import Link from 'next/link'
 import Logo from '../../images/logo.jpg'
-import { FaUser } from 'react-icons/fa'
-import { FaShoppingCart } from 'react-icons/fa'
+import { FaUser, FaUserCircle } from 'react-icons/fa'
 
-import { Cookies } from 'react-cookie'
+import AuthDropdown from '../dropdown'
 
-const cookies = new Cookies()
+import { useRouter } from 'next/router'
 
-const navbar = () => {
+import { useUser } from '../../context/User'
+import { RiLogoutBoxLine } from 'react-icons/ri'
+
+const navbar: React.FC = () => {
+    const router = useRouter()
+
+    const [showAuthDropdown, setShowAuthDropdown] = useState(false)
+    const { user, setUser } = useUser()
+
+    const handleLogout = async () => {
+        await axios.post('/users/logout')
+        setUser(null)
+        setShowAuthDropdown(false)
+        router.replace('/auth')
+    }
+
+    const [authDropdownList] = useState([
+        {
+            icon: FaUserCircle,
+            text: ' Minha conta',
+            type: 'link',
+            link: '/myaccount'
+        },
+        {
+            icon: RiLogoutBoxLine,
+            text: 'Logout',
+            type: 'button',
+            click: () => handleLogout()
+        }
+    ])
+
     return (
         <Nav>
             <LogoBox>
-                <img src={Logo} alt="Logo" />
+                <Link href="/">
+                    <img src={Logo} alt="Logo" />
+                </Link>
             </LogoBox>
             <NavBox>
-                <li>
+                <Li isActive={router.pathname === '/'}>
                     <Link href="/">
                         <a>Home</a>
                     </Link>
-                </li>
-                <li>
+                </Li>
+                <Li isActive={router.pathname === '/shop'}>
                     <Link href="/shop">
                         <a>Shop</a>
                     </Link>
-                </li>
+                </Li>
             </NavBox>
             <NavBox>
-                <li>
-                    <Link href="/shop">
-                        <a>
-                            <span>7</span>
-                            <FaShoppingCart />
-                        </a>
-                    </Link>
-                </li>
-
-                <li>
-                    <Link href="/auth">
-                        <a>
-                            <FaUser />
-                        </a>
-                    </Link>
-                </li>
+                <AuthLi>
+                    <AuthDiv>
+                        {user ? (
+                            <button onClick={() => setShowAuthDropdown(true)}>
+                                <FaUser />
+                                <p>{user.firstName}</p>
+                            </button>
+                        ) : (
+                            <Link href="/auth">
+                                <a>
+                                    <FaUser />
+                                </a>
+                            </Link>
+                        )}
+                    </AuthDiv>
+                    {showAuthDropdown && (
+                        <AuthDropdown
+                            show={showAuthDropdown}
+                            setShow={setShowAuthDropdown}
+                            list={authDropdownList}
+                        />
+                    )}
+                </AuthLi>
             </NavBox>
         </Nav>
     )

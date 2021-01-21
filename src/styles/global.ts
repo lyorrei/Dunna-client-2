@@ -13,9 +13,9 @@ export default createGlobalStyle`
 	}
 
     body {
-        background-color: ${props => props.theme.colors.greyDark3};
-        /* background-color: #dbdbdb; */
+        background-color: ${({theme}) => theme.colors.greyLight4};
         font-family: 'Raleway', sans-serif;
         color: ${props => props.theme.colors.greyDark2};
+        min-height: 100vh;
     }
 `

@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from 'react'
-import requireAuthentication from '../HOC/requireAuthentication'
 
 import Head from 'next/head'
-import Page from '../components/page'
 
-const Home = () => {
-    return (
-        <div>
-            <Head>
-                <title>Dunna Jewelry</title>
-            </Head>
-            <Page>
-                <main>
-                    <h1>Hello World</h1>
-                    <h2>teste</h2>
-                </main>
-            </Page>
-        </div>
-    )
-}
+import { PageContainer } from '../styles/pages'
 
-Home.getInitialProps = ctx => {
-    // console.log(ctx.req)
-    return {
+import Header from '../components/header'
 
+const pageContainerVariant = {
+    hidden: { opacity: 1, scale: 0 },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        transition: {
+            duration: 0.2
+        }
     }
 }
 
-export default requireAuthentication(Home)
+const Home = () => {
+    return (
+        <>
+            <Head>
+                <title>Dunna Jewelry</title>
+            </Head>
+            <PageContainer
+                variants={pageContainerVariant}
+                initial="hidden"
+                animate="visible"
+            >
+                <Header />
+            </PageContainer>
+        </>
+    )
+}
+
+export default Home

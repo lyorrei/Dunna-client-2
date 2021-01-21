@@ -10,19 +10,19 @@ import Form from '../form'
 import Alert, { Types } from '../alert'
 
 import Router from 'next/router'
+import { useUser } from '../../context/User'
 
 interface Props {
-    loading: boolean
     setLoading(boolean: boolean): void
 }
 
-const loginForm: React.FC<Props> = ({ loading, setLoading }) => {
+const loginForm: React.FC<Props> = ({ setLoading }) => {
     const [formError, setFormError] = useState(null)
     const formRef = useRef<FormHandles>(null)
+    const { setUser } = useUser()
 
-    const handleSubmit: SubmitHandler<FormData> = async (formData) => {
+    const handleSubmit: SubmitHandler<FormData> = async formData => {
         try {
-
             // Remove all previous errors
             setFormError(null)
             formRef.current.setErrors({})
@@ -38,7 +38,8 @@ const loginForm: React.FC<Props> = ({ loading, setLoading }) => {
 
             // Validation passed
             setLoading(true)
-            await axios.post('/users/login', formData)
+            const { data: user } = await axios.post('/users/login', formData)
+            setUser(user)
             Router.replace('/')
         } catch (err) {
             const validationErrors = {}
@@ -54,13 +55,9 @@ const loginForm: React.FC<Props> = ({ loading, setLoading }) => {
         }
     }
 
-    // if (loading) {
-    //     return null
-    // }
-
     return (
         <Form ref={formRef} onSubmit={handleSubmit}>
-            {/* {formError && <Alert type={Types.red}>{formError}</Alert>} */}
+            {formError && <Alert type={Types.red}>{formError}</Alert>}
 
             <Input name="email" label="Email" type="email" />
             <Input name="password" label="Senha" type="password" />
