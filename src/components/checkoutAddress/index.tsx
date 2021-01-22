@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsPlusSquare } from 'react-icons/bs'
 import { Address } from '../../pages/addresses'
 import { Container, HeaderContainer } from '../../styles/pages/checkout'
@@ -17,13 +17,14 @@ interface Props {
     myAddresses: Address[]
     selectedAddress: string
     setSelectedAddress(address: string): void
+    stage: number
     setStage(stage: number): void
 }
 
 const containerVariants = {
     hidden: {
         opacity: 0,
-        y: '-100%'
+        y: '-120%'
     },
     visible: {
         opacity: 1,
@@ -35,13 +36,24 @@ const checkoutAddress: React.FC<Props> = ({
     myAddresses,
     selectedAddress,
     setSelectedAddress,
+    stage,
     setStage
 }) => {
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        if (stage === 0) {
+            setIsVisible(true)
+        } else {
+            setIsVisible(false)
+        }
+    }, [stage])
+
     return (
         <Container
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            animate={isVisible ? 'visible' : 'hidden'}
             exit="hidden"
         >
             <HeaderContainer>

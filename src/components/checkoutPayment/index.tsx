@@ -17,7 +17,7 @@ const cartElementOptions = {
 const containerVariants = {
     hidden: {
         opacity: 0,
-        y: '-100%'
+        y: '-120%'
     },
     visible: {
         opacity: 1,
@@ -26,12 +26,22 @@ const containerVariants = {
 }
 
 interface Props {
+    stage: number
     setStage(stage: number): void
 }
 
-const checkoutPayment: React.FC<Props> = ({ setStage }) => {
+const checkoutPayment: React.FC<Props> = ({ setStage, stage }) => {
     const stripe = useStripe()
     const [isCompleted, setIsCompleted] = useState(false)
+    const [isVisible, setIsVisible] = useState(false)
+
+    useEffect(() => {
+        if (stage === 1) {
+            setIsVisible(true)
+        } else {
+            setIsVisible(false)
+        }
+    }, [stage])
 
     const HandleCardChange = target => {
         setIsCompleted(target.complete)
@@ -41,7 +51,7 @@ const checkoutPayment: React.FC<Props> = ({ setStage }) => {
         <Container
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            animate={isVisible ? 'visible' : 'hidden'}
             exit="hidden"
         >
             <HeaderContainer>

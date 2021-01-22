@@ -11,9 +11,13 @@ import {
     Total
 } from './style'
 
-const checkoutCart: React.FC = props => {
+interface Props {
+    total: number
+    setTotal(number: number): void
+}
+
+const checkoutCart: React.FC<Props> = ({total, setTotal}) => {
     const { cart } = useCart()
-    const [total, setTotal] = useState(0)
 
     useEffect(() => {
         let totalPrice = 0

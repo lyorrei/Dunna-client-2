@@ -102,10 +102,6 @@ export default function CountProvider({ children }) {
         }
     }
 
-    useEffect(() => {
-        console.log(cart)
-    }, [cart])
-
     return (
         <CartContext.Provider
             value={{

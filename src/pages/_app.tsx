@@ -18,7 +18,8 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 const MyApp: React.FC<AppProps> = ({ Component, pageProps, router }) => {
     return (
-        <Elements stripe={stripePromise}>
+        // <Elements stripe={stripePromise}>
+        // {/* </Elements> */}
             <CookiesProvider>
                 <UserProvider>
                     <CartProvider>
@@ -32,7 +33,6 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps, router }) => {
                     </CartProvider>
                 </UserProvider>
             </CookiesProvider>
-        </Elements>
     )
 }
 

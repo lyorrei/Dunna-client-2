@@ -21,7 +21,8 @@ import CheckoutAddressInfo from '../components/checkoutAddressInfo'
 import CheckoutConfirm from '../components/checkoutConfirm'
 import { InlineButton } from '../components/button'
 import { User } from './me'
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
+import { CardElement, Elements, useElements, useStripe } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 
 const pageContainerVariant = {
     hidden: { opacity: 1, scale: 0 },
@@ -38,39 +39,61 @@ interface Props {
     myAddresses: Address[]
     user: User
 }
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
 
 const checkout = ({ myAddresses, user }: Props) => {
     const [selectedAddress, setSelectedAddress] = useState(null)
     const [stage, setStage] = useState(0)
     const { cart } = useCart()
+    const [total, setTotal] = useState(0)
 
-    const elements = useElements()
-    const stripe = useStripe()
 
-    const handleSubmit = () => {
-        const cardElement = elements.getElement(CardElement)
-        console.log(cardElement)
-    }
+
+
 
     let pageContent = <EmptyCart>Seu carrinho está vazio</EmptyCart>
     if (cart.length > 0) {
-        switch (stage) {
-            case 0:
-                pageContent = (
-                    <CheckoutAddress
-                        myAddresses={myAddresses}
-                        selectedAddress={selectedAddress}
-                        setSelectedAddress={setSelectedAddress}
-                        setStage={setStage}
-                    />
-                )
-                break
-            case 1:
-                pageContent = <CheckoutPayment setStage={setStage} />
-                break
-            case 2:
-                pageContent = <CheckoutConfirm handleSubmit={handleSubmit} setStage={setStage}/>
-        }
+        // switch (stage) {
+        //     case 0:
+        //         pageContent = (
+        //             <CheckoutAddress
+        //                 myAddresses={myAddresses}
+        //                 selectedAddress={selectedAddress}
+        //                 setSelectedAddress={setSelectedAddress}
+        //                 setStage={setStage}
+        //             />
+        //         )
+        //         break
+        //     case 1:
+        //         pageContent = <CheckoutPayment setStage={setStage} />
+        //         break
+        //     case 2:
+        //         pageContent = (
+        //             <CheckoutConfirm
+        //                 handleSubmit={handleSubmit}
+        //                 setStage={setStage}
+        //             />
+        //         )
+        // }
+        pageContent = (
+            <>
+                <CheckoutAddress
+                    myAddresses={myAddresses}
+                    selectedAddress={selectedAddress}
+                    setSelectedAddress={setSelectedAddress}
+                    stage={stage}
+                    setStage={setStage}
+                />
+                <CheckoutPayment stage={stage} setStage={setStage} />
+                <CheckoutConfirm
+                    // handleSubmit={handleSubmit}
+                    total={total}
+                    selectedAddress={selectedAddress}
+                    stage={stage}
+                    setStage={setStage}
+                />
+            </>
+        )
     }
 
     return (
@@ -78,23 +101,27 @@ const checkout = ({ myAddresses, user }: Props) => {
             <Head>
                 <title>Dunna - Checkout</title>
             </Head>
-            <PageContainer
-                variants={pageContainerVariant}
-                initial="hidden"
-                animate="visible"
-                imageUrl={CheckoutBackground}
-            >
-                <CheckoutStage stage={stage} />
-                {pageContent}
-                {cart.length > 0 && <CheckoutCart />}
-                {selectedAddress && stage !== 0 && (
-                    <CheckoutAddressInfo
-                        selectedAddress={selectedAddress}
-                        myAddresses={myAddresses}
-                        user={user}
-                    />
-                )}
-            </PageContainer>
+            <Elements stripe={stripePromise}>
+                <PageContainer
+                    variants={pageContainerVariant}
+                    initial="hidden"
+                    animate="visible"
+                    imageUrl={CheckoutBackground}
+                >
+                    <CheckoutStage stage={stage} />
+                    {pageContent}
+                    {cart.length > 0 && (
+                        <CheckoutCart total={total} setTotal={setTotal} />
+                    )}
+                    {selectedAddress && stage !== 0 && (
+                        <CheckoutAddressInfo
+                            selectedAddress={selectedAddress}
+                            myAddresses={myAddresses}
+                            user={user}
+                        />
+                    )}
+                </PageContainer>
+            </Elements>
         </>
     )
 }
